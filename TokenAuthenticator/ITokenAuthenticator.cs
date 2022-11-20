@@ -1,4 +1,4 @@
-﻿namespace JwtAuthenticator;
+﻿namespace TokenAuthenticator;
 
 public interface ITokenAuthenticator
 {
