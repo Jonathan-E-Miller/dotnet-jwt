@@ -2,6 +2,6 @@
 
 public interface ITokenAuthenticator
 {
-    string GeneratorToken();
-    string ValidateToken();
+    string GeneratorToken(int userId);
+    bool ValidateToken(string token);
 }

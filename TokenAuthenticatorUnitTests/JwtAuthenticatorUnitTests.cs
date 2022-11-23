@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Dynamic;
 using Microsoft.Extensions.Configuration;
 using TokenAuthenticator;
 
@@ -14,7 +15,8 @@ public class JwtAuthenticatorUnitTests
     {
         //Arrange
         var inMemorySettings = new Dictionary<string, string?> {
-            {"Jwt:Key", "ALongStringContainingEnoughCharacters"}
+            {"Jwt:Key", "ALongStringContainingEnoughCharacters"},
+            {"Jwt:Issuer", "TestAudience"}
         };
 
         _configuration = new ConfigurationBuilder()
@@ -31,6 +33,36 @@ public class JwtAuthenticatorUnitTests
         var exception = Assert.Throws<ArgumentNullException>(() => _ = new JwtAuthenticator(null));
         Assert.That(exception!.ParamName, Is.EqualTo("configuration"));
     }
+
+    [Test]
+    public void Constructor_WhenCalledWithMissingJwtKey_ThrowsInvalidConfigurationException()
+    {
+        var inMemorySettings = new Dictionary<string, string?> {
+            {"Jwt:Issuer", "TestAudience"}
+        };
+        var configuration = new ConfigurationManager()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var exception = Assert.Throws<InvalidConfigurationException>(() => _ = new JwtAuthenticator(configuration));
+        
+        Assert.That(exception!.Message, Is.EqualTo("Invalid configuration"));
+    }
+    
+    [Test]
+    public void Constructor_WhenCalledWithMissingJwtIssuer_ThrowsInvalidConfigurationException()
+    {
+        var inMemorySettings = new Dictionary<string, string?> {
+            {"Jwt:Key", "TestAudience"}
+        };
+        var configuration = new ConfigurationManager()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+        
+        var exception = Assert.Throws<InvalidConfigurationException>(() => _ = new JwtAuthenticator(configuration));
+        
+        Assert.That(exception!.Message, Is.EqualTo("Invalid configuration"));
+    }
     
     [Test]
     public void Constructor_WhenCalledWithIConfiguration_DoesNotThrow()
@@ -41,22 +73,26 @@ public class JwtAuthenticatorUnitTests
     [Test]
     public void GenerateToken_WhenCalledWithValidConfiguration_GeneratesToken()
     {
-        string token = _sut!.GeneratorToken();
+        var token = _sut!.GeneratorToken(5);
         
         Assert.IsFalse(string.IsNullOrEmpty(token));
     }
 
     [Test]
-    public void GenerateToken_WhenCalledWithInvalidConfiguration_ThrowsException()
+    public void ValidateToken_WhenCalledWithValidToken_ReturnsTrue()
     {
-
-        var configuration = new ConfigurationBuilder()
-            .Build();
+        var token = _sut!.GeneratorToken(5);
+        var result = _sut.ValidateToken(token);
         
-        var sut = new JwtAuthenticator(configuration);
+        Assert.IsTrue(result);
+    }
 
-        var exception = Assert.Throws<Exception>(() => sut.GeneratorToken());
-        
-        Assert.That(exception!.Message, Is.EqualTo("Invalid configuration"));
+    [Test]
+    public void ValidateToken_WhenCalledWithInvalidToken_ReturnsFalse()
+    {
+        var invalidToken = "invalidTestToken";
+        var result = _sut.ValidateToken(invalidToken);
+        Assert.IsFalse(result);
+
     }
 }
