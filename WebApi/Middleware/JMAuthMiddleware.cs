@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.Features;
+﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
-using Microsoft.Net.Http.Headers;
 using TokenAuthenticator;
-using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace WebApi.Middleware;
 
