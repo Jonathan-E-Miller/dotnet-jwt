@@ -34,7 +34,7 @@ public class AuthController : Controller
         int userId = -1;
         
         // avoiding making a db call to validate the username and password
-        if (loginDetails.UserName == "test" && loginDetails.Password == "password")
+        if (loginDetails.Username == "test" && loginDetails.Password == "password")
         {
             authenitcated = true;
             // in real code, the user id would be fetched from the database.
