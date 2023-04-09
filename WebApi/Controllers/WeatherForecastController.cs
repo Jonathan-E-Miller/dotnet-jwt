@@ -4,6 +4,7 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[JMAuth]
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]

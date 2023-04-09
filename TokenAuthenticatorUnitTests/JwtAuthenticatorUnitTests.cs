@@ -73,7 +73,7 @@ public class JwtAuthenticatorUnitTests
     [Test]
     public void GenerateToken_WhenCalledWithValidConfiguration_GeneratesToken()
     {
-        var token = _sut!.GeneratorToken(5);
+        var token = _sut!.GenerateToken(5);
         
         Assert.IsFalse(string.IsNullOrEmpty(token));
     }
@@ -81,7 +81,7 @@ public class JwtAuthenticatorUnitTests
     [Test]
     public void ValidateToken_WhenCalledWithValidToken_ReturnsTrue()
     {
-        var token = _sut!.GeneratorToken(5);
+        var token = _sut!.GenerateToken(5);
         var result = _sut.ValidateToken(token);
         
         Assert.IsTrue(result);

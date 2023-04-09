@@ -20,7 +20,7 @@ public class JwtAuthenticator : ITokenAuthenticator
         _issuer = _configuration["Jwt:Issuer"] ?? throw new InvalidConfigurationException("Invalid configuration");
     }
     
-    public string GeneratorToken(int userId)
+    public string GenerateToken(int userId)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));    
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);    
@@ -57,7 +57,7 @@ public class JwtAuthenticator : ITokenAuthenticator
             var user = handler.ValidateToken(token, tokenValidationParameters, out _);
             return user != null;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Something went wrong verifying the token
             return false;
